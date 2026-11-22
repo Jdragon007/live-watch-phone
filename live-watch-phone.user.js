@@ -1221,7 +1221,7 @@
   addEventListener('message', ev => { const d = ev.data; if (ev.source !== window || !d || d.__lwnet !== 1) return;
     if (d.perf) { PF.net += d.perf.ms || 0; PF.netN += d.perf.n || 0; return; }
     // 그립 상품 목록 데이터(상품명·판매가): 진단 설정과 관계없이 항상 기록 → 목록을 열지 않아도 가격을 안다
-    if (d.gprods) { try { for (const g of d.gprods) buffer.push({ t: Date.now(), kind: '그립_상품데이터', text: String(g.name).replace(/\|/g, '/') + '|' + g.price, info: 'id=' + g.id + (g.sales !== '' ? ' 누적판매=' + g.sales : ''), sig: 'net-prod', p: PLATFORM, b: BID, u: SRC, i: 0 }); total += d.gprods.length; } catch (e) {} return; }
+    if (d.gprods) { try { for (const g of d.gprods) buffer.push({ t: Date.now(), kind: '그립_상품데이터', text: String(g.name).replace(/\|/g, '/') + '|' + g.price, info: 'id=' + g.id + (g.sales !== '' ? ' 누적판매=' + g.sales : '') + (g.live !== '' && g.live != null ? ' 라이브가=' + g.live : ''), sig: 'net-prod', p: PLATFORM, b: BID, u: SRC, i: 0 }); total += d.gprods.length; } catch (e) {} return; }
     // 클릭메이트 주문 데이터(구매 완료·취소): 진단 설정과 관계없이 항상 기록 → 취소 차감·정확한 가격에 사용
     if (d.ord) { const o = d.ord; try { buffer.push({ t: Date.now(), kind: '클릭메이트_주문데이터', text: [o.st, o.guest, o.product, o.count, o.price].map(x => String(x == null ? '' : x).replace(/\|/g, '/')).join('|'), info: 'cid=' + (o.cid || '') + (o.opt ? ' 옵션=' + o.opt : ''), sig: 'net-order', p: PLATFORM, b: BID, u: SRC, i: 0 }); total++; } catch (e) {} return; }
     if (!netDiag) return; try { buffer.push({ t: Date.now(), kind: '진단_네트워크', text: String(d.text || '').slice(0, 1500), info: (d.src || '') + ' ' + (d.url || ''), sig: 'net', p: PLATFORM, b: BID, u: SRC, i: 0 }); total++; } catch (e) {} });
